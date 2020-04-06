@@ -12,6 +12,8 @@ const PADDLE_MARGIN_BOTTOM = 50;
 const PADDLE_HEIGHT = 20;
 const BALL_RADIUS = 8;
 let LIFE = 5;
+let SCORE = 0;
+let SCORE_UNIT = 10;
 let leftArrow = false;
 let  rightArrow = false;
 // code for the line with of the paddle
@@ -149,12 +151,14 @@ function drawingBricks(){
             if(b.status){
                 ctx.fillStyle = bricks.fillColor;
                 ctx.fillRect( b.x, b.y, bricks.width, bricks.height );
+
                 ctx.strokeStyle = bricks.strokeColor;
                 ctx.strokeRect( b.x, b.y, bricks.width, bricks.height );
             }
         }
     }
 };
+drawingBricks();
 // code when the ball collides with the bricks 
 function ballCrashWithBricks(){
       for(let r = 0; r < bricks.row; r++){
@@ -162,7 +166,11 @@ function ballCrashWithBricks(){
             let b = brick[r][c];
             // this if statatement will check if the brick is not broken
             if(b.status){
-                if(ball.x + ball.radius > b.x && ball.x - ball.radius < b.x + bricks.width)
+                if(ball.x + ball.radius > b.x && ball.x - ball.radius < b.x + bricks.width && ball.y + ball.radius > b.y && ball.y - ball.radius < b.y + bricks.height){
+                    ball.dy = - ball.dy;
+                    b.status = false; //brick is broken
+                    SCORE += SCORE_UNIT;
+                }
             }
         }
     }
@@ -173,7 +181,6 @@ function draw(){
 
     drawBall();
 
-    drawingBricks();
 };
 // update function will allowe for the game logic
 function update(){
@@ -181,7 +188,7 @@ function update(){
     moveBall();
     ballBounceOnSides();
     ballBounceOfPaddle();
-
+    ballCrashWithBricks();
 };
 
 // game loop this will allow for the game to keep looping 
